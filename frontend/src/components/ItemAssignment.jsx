@@ -15,24 +15,22 @@ export default function ItemAssignment({ receipt, people, onComplete }) {
     setAssignments(initial);
   }, [receipt]);
 
-  const addAssignment = (itemId, personId, share) => {
+  const addAssignment = (itemId, personId) => {
     const currentAssignments = assignments[itemId] || [];
-    const totalShare = currentAssignments.reduce((sum, a) => sum + a.share, 0);
 
-    if (totalShare + share > 1.0001) {
-      setError(`Total share for this item would exceed 100%`);
-      return;
-    }
-
+    // Check if person is already assigned
     const existingIndex = currentAssignments.findIndex((a) => a.personId === personId);
-    let newAssignments;
-
     if (existingIndex >= 0) {
-      newAssignments = [...currentAssignments];
-      newAssignments[existingIndex] = { personId, share };
-    } else {
-      newAssignments = [...currentAssignments, { personId, share }];
+      return; // Person already assigned
     }
+
+    // Add new person and recalculate equal shares
+    const newPeople = [...currentAssignments.map(a => a.personId), personId];
+    const equalShare = 1 / newPeople.length;
+    const newAssignments = newPeople.map((pid) => ({
+      personId: pid,
+      share: equalShare,
+    }));
 
     setAssignments({
       ...assignments,
@@ -42,9 +40,21 @@ export default function ItemAssignment({ receipt, people, onComplete }) {
   };
 
   const removeAssignment = (itemId, personId) => {
+    const currentAssignments = assignments[itemId] || [];
+    const remainingPeople = currentAssignments
+      .filter((a) => a.personId !== personId)
+      .map(a => a.personId);
+
+    // Recalculate equal shares for remaining people
+    const equalShare = remainingPeople.length > 0 ? 1 / remainingPeople.length : 0;
+    const newAssignments = remainingPeople.map((pid) => ({
+      personId: pid,
+      share: equalShare,
+    }));
+
     setAssignments({
       ...assignments,
-      [itemId]: assignments[itemId].filter((a) => a.personId !== personId),
+      [itemId]: newAssignments,
     });
   };
 
@@ -138,8 +148,7 @@ export default function ItemAssignment({ receipt, people, onComplete }) {
             <select
               onChange={(e) => {
                 if (e.target.value) {
-                  const remaining = 1 - getItemTotal(item.id);
-                  addAssignment(item.id, e.target.value, Math.min(remaining, 1));
+                  addAssignment(item.id, e.target.value);
                   e.target.value = '';
                 }
               }}
@@ -151,19 +160,6 @@ export default function ItemAssignment({ receipt, people, onComplete }) {
                 </option>
               ))}
             </select>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              step="10"
-              defaultValue="100"
-              onChange={(e) => {
-                const select = e.target.previousElementSibling;
-                if (select.value) {
-                  addAssignment(item.id, select.value, parseInt(e.target.value) / 100);
-                }
-              }}
-            />
           </div>
         </div>
       ))}
