@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import api from '../services/api';
+import OCRUpload from './OCRUpload';
 
 export default function ReceiptForm({ people, onReceiptCreated }) {
   const [merchant, setMerchant] = useState('');
@@ -73,7 +74,17 @@ export default function ReceiptForm({ people, onReceiptCreated }) {
   return (
     <div className="receipt-form">
       <h2>Add Receipt</h2>
-
+  
+      {/* ✅ OCR upload */}
+      <OCRUpload
+        paidBy={paidBy}
+        onReceiptParsed={(receipt) => {
+          onReceiptCreated(receipt);
+        }}
+      />
+  
+      <div className="divider">or enter manually</div>
+  
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Merchant *</label>
@@ -85,10 +96,14 @@ export default function ReceiptForm({ people, onReceiptCreated }) {
             disabled={loading}
           />
         </div>
-
+  
         <div className="form-group">
           <label>Paid By</label>
-          <select value={paidBy} onChange={(e) => setPaidBy(e.target.value)} disabled={loading}>
+          <select
+            value={paidBy}
+            onChange={(e) => setPaidBy(e.target.value)}
+            disabled={loading}
+          >
             <option value="">Select person (optional)</option>
             {people.map((person) => (
               <option key={person.id} value={person.id}>
@@ -97,7 +112,7 @@ export default function ReceiptForm({ people, onReceiptCreated }) {
             ))}
           </select>
         </div>
-
+  
         <div className="items-section">
           <h3>Items *</h3>
           {items.map((item, index) => (
@@ -127,7 +142,11 @@ export default function ReceiptForm({ people, onReceiptCreated }) {
                 disabled={loading}
               />
               {items.length > 1 && (
-                <button type="button" onClick={() => removeItem(index)} disabled={loading}>
+                <button
+                  type="button"
+                  onClick={() => removeItem(index)}
+                  disabled={loading}
+                >
                   Remove
                 </button>
               )}
@@ -137,7 +156,7 @@ export default function ReceiptForm({ people, onReceiptCreated }) {
             + Add Item
           </button>
         </div>
-
+  
         <div className="form-row">
           <div className="form-group">
             <label>Tax</label>
@@ -151,6 +170,7 @@ export default function ReceiptForm({ people, onReceiptCreated }) {
               disabled={loading}
             />
           </div>
+  
           <div className="form-group">
             <label>Tip</label>
             <input
@@ -164,13 +184,15 @@ export default function ReceiptForm({ people, onReceiptCreated }) {
             />
           </div>
         </div>
-
+  
         {error && <div className="error">{error}</div>}
-
+  
         <button type="submit" className="submit-btn" disabled={loading}>
           {loading ? 'Creating...' : 'Create Receipt'}
         </button>
       </form>
     </div>
   );
+  
+
 }
