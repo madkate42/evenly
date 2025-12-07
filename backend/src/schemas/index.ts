@@ -7,8 +7,8 @@ export interface ReceiptItem {
 
 export interface Receipt {
   id: string;
-  merchant: string;
-  date: Date;
+  merchant?: string;
+  date?: Date;
   items: ReceiptItem[];
   subtotal: number;
   total: number;

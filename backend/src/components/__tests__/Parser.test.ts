@@ -24,9 +24,10 @@ TOTAL  27.38`;
       const receipt = parser.parseOCR(ocrData, 'user-123');
 
       expect(receipt.merchant).toBe('CHIPOTLE');
-      expect(receipt.date.getFullYear()).toBe(2025);
-      expect(receipt.date.getMonth()).toBe(11); // December (0-indexed)
-      expect(receipt.date.getDate()).toBe(7);
+      expect(receipt.date).toBeDefined();
+      expect(receipt.date!.getFullYear()).toBe(2025);
+      expect(receipt.date!.getMonth()).toBe(11); // December (0-indexed)
+      expect(receipt.date!.getDate()).toBe(7);
       expect(receipt.items).toHaveLength(4);
       expect(receipt.items[0]).toMatchObject({
         name: 'BURRITO',
@@ -124,15 +125,18 @@ TOTAL  8.00`;
     it('should handle different date formats', () => {
       const ocrData1 = `STORE\n12/07/2025\nItem  5.00\nTOTAL  5.00`;
       const receipt1 = parser.parseOCR(ocrData1);
-      expect(receipt1.date.getFullYear()).toBe(2025);
+      expect(receipt1.date).toBeDefined();
+      expect(receipt1.date!.getFullYear()).toBe(2025);
 
       const ocrData2 = `STORE\n2025/12/07\nItem  5.00\nTOTAL  5.00`;
       const receipt2 = parser.parseOCR(ocrData2);
-      expect(receipt2.date.getFullYear()).toBe(2025);
+      expect(receipt2.date).toBeDefined();
+      expect(receipt2.date!.getFullYear()).toBe(2025);
 
       const ocrData3 = `STORE\n12-07-2025\nItem  5.00\nTOTAL  5.00`;
       const receipt3 = parser.parseOCR(ocrData3);
-      expect(receipt3.date.getFullYear()).toBe(2025);
+      expect(receipt3.date).toBeDefined();
+      expect(receipt3.date!.getFullYear()).toBe(2025);
     });
 
     it('should use current date when no date found', () => {
@@ -140,9 +144,10 @@ TOTAL  8.00`;
       const receipt = parser.parseOCR(ocrData);
 
       const now = new Date();
-      expect(receipt.date.getFullYear()).toBe(now.getFullYear());
-      expect(receipt.date.getMonth()).toBe(now.getMonth());
-      expect(receipt.date.getDate()).toBe(now.getDate());
+      expect(receipt.date).toBeDefined();
+      expect(receipt.date!.getFullYear()).toBe(now.getFullYear());
+      expect(receipt.date!.getMonth()).toBe(now.getMonth());
+      expect(receipt.date!.getDate()).toBe(now.getDate());
     });
 
     it('should skip likely non-merchant header lines', () => {
@@ -335,9 +340,10 @@ TOTAL  16.00`;
       const receipt = parser.parseManual(manualData);
 
       const now = new Date();
-      expect(receipt.date.getFullYear()).toBe(now.getFullYear());
-      expect(receipt.date.getMonth()).toBe(now.getMonth());
-      expect(receipt.date.getDate()).toBe(now.getDate());
+      expect(receipt.date).toBeDefined();
+      expect(receipt.date!.getFullYear()).toBe(now.getFullYear());
+      expect(receipt.date!.getMonth()).toBe(now.getMonth());
+      expect(receipt.date!.getDate()).toBe(now.getDate());
     });
 
     it('should default paidBy to empty string when not provided', () => {
