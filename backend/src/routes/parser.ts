@@ -7,7 +7,7 @@ const parser = new Parser();
 // POST /api/parser/ocr - Parse receipt from OCR data
 router.post('/ocr', (req, res) => {
   try {
-    const receipt = parser.parseOCR(req.body.ocrData);
+    const receipt = parser.parseOCR(req.body.ocrData, req.body.paidBy);
     res.json(receipt);
   } catch (error) {
     res.status(500).json({ error: 'Failed to parse OCR data' });
