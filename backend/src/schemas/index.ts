@@ -11,11 +11,11 @@ export interface Receipt {
   date: Date;
   items: ReceiptItem[];
   subtotal: number;
-  discounts: number;
-  tax: number;
-  tip: number;
   total: number;
   paidBy: string; // personId of who paid for this receipt
+  discounts?: number;
+  tax?: number;
+  tip?: number;
 }
 
 export interface ItemAssignment {
