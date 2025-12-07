@@ -1,10 +1,12 @@
 import express from 'express';
+import cors from 'cors';
 import parserRouter from './routes/parser';
 import itemizerRouter from './routes/itemizer';
 import balanceRouter from './routes/balance';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (_req, res) => {

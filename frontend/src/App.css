@@ -1,0 +1,418 @@
+* {
+  box-sizing: border-box;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ddd;
+}
+
+header h1 {
+  margin: 0;
+  color: #333;
+}
+
+/* Tabs Navigation */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #eee;
+}
+
+.tabs button {
+  padding: 12px 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.tabs button:hover {
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+.tabs button.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+main {
+  min-height: 400px;
+}
+
+/* People Manager */
+.people-manager {
+  max-width: 600px;
+}
+
+.people-manager h2 {
+  margin-top: 0;
+}
+
+.people-manager form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.people-manager input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.people-manager button {
+  padding: 10px 20px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.people-manager button:hover {
+  background-color: #1d4ed8;
+}
+
+.people-manager button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.people-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.people-list li {
+  padding: 12px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+/* Receipt Form */
+.receipt-form {
+  max-width: 700px;
+}
+
+.receipt-form h2 {
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.items-section {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f9fafb;
+  border-radius: 4px;
+}
+
+.items-section h3 {
+  margin-top: 0;
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 80px auto;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.item-row input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.item-row button {
+  padding: 8px 12px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.items-section > button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 20px;
+}
+
+.submit-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.submit-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Item Assignment */
+.item-assignment {
+  max-width: 800px;
+}
+
+.item-assignment h2 {
+  margin-top: 0;
+}
+
+.item-assignment .info {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.item-card {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.item-header .price {
+  color: #6b7280;
+}
+
+.assignment-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 20px;
+  background-color: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #10b981;
+  transition: width 0.3s;
+}
+
+.progress-text {
+  min-width: 50px;
+  text-align: right;
+  font-weight: 500;
+}
+
+.assignments-list {
+  margin-bottom: 15px;
+}
+
+.assignment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.assignment-row button {
+  padding: 4px 12px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-assignment {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.add-assignment select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-assignment input[type='range'] {
+  flex: 0.5;
+}
+
+/* Settlements */
+.settlements {
+  max-width: 700px;
+}
+
+.settlements h2 {
+  margin-top: 0;
+}
+
+.settlements > button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.settlements > button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.settlements-list {
+  margin-bottom: 30px;
+}
+
+.settlement-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.settlement-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settlement-info .arrow {
+  color: #10b981;
+  font-size: 20px;
+}
+
+.settlement-amount {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.balance-summary {
+  padding: 20px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.balance-summary h3,
+.balance-summary h4 {
+  margin-top: 0;
+}
+
+.receipts-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.receipts-list li {
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+/* Utility Classes */
+.error {
+  padding: 12px;
+  background-color: #fee2e2;
+  color: #dc2626;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.warning {
+  padding: 12px;
+  background-color: #fef3c7;
+  color: #d97706;
+  border-radius: 4px;
+}
+
+.empty-state {
+  padding: 40px;
+  text-align: center;
+  color: #9ca3af;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 2px dashed #e5e7eb;
+}
