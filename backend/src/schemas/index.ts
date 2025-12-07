@@ -15,6 +15,7 @@ export interface Receipt {
   tax: number;
   tip: number;
   total: number;
+  paidBy: string; // personId of who paid for this receipt
 }
 
 export interface ItemAssignment {
