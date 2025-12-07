@@ -34,7 +34,7 @@ POST /api/parser/ocr { ocrData: "..." }
     items: [
       { id: "i1", name: "Pepperoni Pizza", price: 20, quantity: 1 },
       { id: "i2", name: "Caesar Salad", price: 12, quantity: 1 },
-      { id: "i3", name: "Drinks", price: 15, quantity: 3 }
+      { id: "i3", name: "Drinks", price: 15, quantity: 1 }
     ],
     subtotal: 47,
     discounts: 0,

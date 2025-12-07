@@ -108,6 +108,7 @@ describe('Itemizer', () => {
       tax: 2.88,
       tip: 6.40,
       total: 41.28,
+      paidBy: 'p1',
     };
 
     it('should return true when all items are fully assigned', () => {
@@ -174,13 +175,14 @@ describe('Itemizer', () => {
         items: [
           { id: 'i1', name: 'Pepperoni Pizza', price: 20, quantity: 1 },
           { id: 'i2', name: 'Caesar Salad', price: 12, quantity: 1 },
-          { id: 'i3', name: 'Drinks', price: 15, quantity: 3 },
+          { id: 'i3', name: 'Drinks', price: 15, quantity: 1 }, // $15 total for drinks
         ],
         subtotal: 47,
         discounts: 0,
         tax: 4.23,
         tip: 9.4,
         total: 60.63,
+        paidBy: 'p2',
       };
 
       // Alice and Bob split pizza
