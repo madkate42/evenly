@@ -57,6 +57,7 @@ describe('API Integration Tests', () => {
           assignments: [{ personId: bob.body.id, share: 1.0 }],
         },
       ];
+      
 
       // Add receipt
       const receiptResponse = await request(app)
@@ -94,19 +95,65 @@ describe('API Integration Tests', () => {
   });
 
   describe('Parser Routes', () => {
-    it('should return error for unimplemented OCR parsing', async () => {
+    it('should successfully parse OCR data', async () => {
+      const ocrData = `CHIPOTLE
+123 MAIN ST
+12/07/2025
+BURRITO  12.50
+GUACAMOLE  3.25
+SUBTOTAL  15.75
+TAX  1.42
+TIP  3.00
+TOTAL  20.17`;
+
       const response = await request(app)
         .post('/api/parser/ocr')
-        .send({ ocrData: 'sample data' });
+        .send({ ocrData, paidBy: 'user-123' });
 
-      expect(response.status).toBe(500);
-      expect(response.body.error).toBe('Failed to parse OCR data');
+      expect(response.status).toBe(200);
+      expect(response.body.merchant).toBe('CHIPOTLE');
+      expect(response.body.items).toHaveLength(2);
+      expect(response.body.items[0].name).toBe('BURRITO');
+      expect(response.body.items[0].price).toBe(12.50);
+      expect(response.body.subtotal).toBe(15.75);
+      expect(response.body.tax).toBe(1.42);
+      expect(response.body.tip).toBe(3.00);
+      expect(response.body.total).toBe(20.17);
+      expect(response.body.paidBy).toBe('user-123');
+      expect(response.body.id).toBeDefined();
     });
 
-    it('should return error for unimplemented manual parsing', async () => {
+    it('should successfully parse manual data', async () => {
+      const manualData = {
+        merchant: 'Starbucks',
+        date: '2025-12-07',
+        items: [
+          { name: 'Latte', price: 5.50, quantity: 2 },
+          { name: 'Croissant', price: 3.75, quantity: 1 },
+        ],
+        tax: 1.28,
+        tip: 2.50,
+        paidBy: 'user-456',
+      };
+
       const response = await request(app)
         .post('/api/parser/manual')
-        .send({ merchant: 'Test', items: [] });
+        .send(manualData);
+
+      expect(response.status).toBe(200);
+      expect(response.body.merchant).toBe('Starbucks');
+      expect(response.body.items).toHaveLength(2);
+      expect(response.body.subtotal).toBe(14.75);
+      expect(response.body.tax).toBe(1.28);
+      expect(response.body.tip).toBe(2.50);
+      expect(response.body.total).toBe(18.53);
+      expect(response.body.paidBy).toBe('user-456');
+    });
+
+    it('should return error for invalid manual data', async () => {
+      const response = await request(app)
+        .post('/api/parser/manual')
+        .send({ merchant: 'Test' }); // Missing items
 
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Failed to parse manual data');
