@@ -18,14 +18,14 @@ export interface Receipt {
   tip?: number;
 }
 
-export interface ItemAssignment {
-  itemId: string;
+export interface PersonShare {
+  personId: string;
   share: number; // 0.0 to 1.0
 }
 
-export interface PersonAssignment {
-  personId: string;
-  items: ItemAssignment[];
+export interface ItemAssignment {
+  itemId: string;
+  assignments: PersonShare[]; // List of people who have shares of this item
 }
 
 export interface Person {
@@ -42,6 +42,6 @@ export interface Settlement {
 export interface Balance {
   persons: Person[];
   receipts: Receipt[];
-  assignments: Map<string, PersonAssignment[]>; // receiptId -> PersonAssignment[]
+  assignments: Map<string, ItemAssignment[]>; // receiptId -> ItemAssignment[]
   settlements: Settlement[];
 }

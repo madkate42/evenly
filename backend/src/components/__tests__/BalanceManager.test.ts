@@ -1,5 +1,5 @@
 import { BalanceManager } from '../BalanceManager';
-import { Receipt, PersonAssignment } from '../../schemas';
+import { Receipt, ItemAssignment } from '../../schemas';
 
 describe('BalanceManager', () => {
   let balanceManager: BalanceManager;
@@ -34,15 +34,15 @@ describe('BalanceManager', () => {
         date: new Date(),
         items: [{ id: 'i1', name: 'Item', price: 10, quantity: 1 }],
         subtotal: 10,
+        total: 13,
+        paidBy: 'p1',
         discounts: 0,
         tax: 1,
         tip: 2,
-        total: 13,
-        paidBy: 'p1',
       };
 
-      const assignments: PersonAssignment[] = [
-        { personId: 'p1', items: [{ itemId: 'i1', share: 1.0 }] },
+      const assignments: ItemAssignment[] = [
+        { itemId: 'i1', assignments: [{ personId: 'p1', share: 1.0 }] },
       ];
 
       balanceManager.addReceipt(receipt, assignments);
@@ -64,15 +64,15 @@ describe('BalanceManager', () => {
         date: new Date(),
         items: [{ id: 'i1', name: 'Item', price: 10, quantity: 1 }],
         subtotal: 10,
+        total: 13,
+        paidBy: 'p1',
         discounts: 0,
         tax: 1,
         tip: 2,
-        total: 13,
-        paidBy: 'p1',
       };
 
-      const assignments: PersonAssignment[] = [
-        { personId: 'p1', items: [{ itemId: 'i1', share: 1.0 }] },
+      const assignments: ItemAssignment[] = [
+        { itemId: 'i1', assignments: [{ personId: 'p1', share: 1.0 }] },
       ];
 
       balanceManager.addReceipt(receipt, assignments);
@@ -91,15 +91,15 @@ describe('BalanceManager', () => {
         date: new Date(),
         items: [{ id: 'i1', name: 'Item', price: 10, quantity: 1 }],
         subtotal: 10,
+        total: 13,
+        paidBy: 'p1', // Alice pays
         discounts: 0,
         tax: 1,
         tip: 2,
-        total: 13,
-        paidBy: 'p1', // Alice pays
       };
 
-      const assignments: PersonAssignment[] = [
-        { personId: 'p2', items: [{ itemId: 'i1', share: 1.0 }] }, // Bob gets the item
+      const assignments: ItemAssignment[] = [
+        { itemId: 'i1', assignments: [{ personId: 'p2', share: 1.0 }] }, // Bob gets the item
       ];
 
       balanceManager.addReceipt(receipt, assignments);
@@ -126,16 +126,16 @@ describe('BalanceManager', () => {
           { id: 'i2', name: 'Item 2', price: 20, quantity: 1 },
         ],
         subtotal: 30,
+        total: 39,
+        paidBy: 'p1', // Alice pays
         discounts: 0,
         tax: 3,
         tip: 6,
-        total: 39,
-        paidBy: 'p1', // Alice pays
       };
 
-      const assignments: PersonAssignment[] = [
-        { personId: 'p1', items: [{ itemId: 'i1', share: 1.0 }] }, // Alice: 10
-        { personId: 'p2', items: [{ itemId: 'i2', share: 1.0 }] }, // Bob: 20
+      const assignments: ItemAssignment[] = [
+        { itemId: 'i1', assignments: [{ personId: 'p1', share: 1.0 }] }, // Alice: 10
+        { itemId: 'i2', assignments: [{ personId: 'p2', share: 1.0 }] }, // Bob: 20
       ];
 
       balanceManager.addReceipt(receipt, assignments);
@@ -168,16 +168,16 @@ describe('BalanceManager', () => {
           { id: 'i2', name: 'Item 2', price: 20, quantity: 1 },
         ],
         subtotal: 40,
+        total: 33,
+        paidBy: 'p1',
         discounts: 10, // $10 discount
         tax: 3,
         tip: 0,
-        total: 33,
-        paidBy: 'p1',
       };
 
-      const assignments: PersonAssignment[] = [
-        { personId: 'p1', items: [{ itemId: 'i1', share: 1.0 }] },
-        { personId: 'p2', items: [{ itemId: 'i2', share: 1.0 }] },
+      const assignments: ItemAssignment[] = [
+        { itemId: 'i1', assignments: [{ personId: 'p1', share: 1.0 }] },
+        { itemId: 'i2', assignments: [{ personId: 'p2', share: 1.0 }] },
       ];
 
       balanceManager.addReceipt(receipt, assignments);
@@ -206,16 +206,21 @@ describe('BalanceManager', () => {
         date: new Date(),
         items: [{ id: 'i1', name: 'Pizza', price: 20, quantity: 1 }],
         subtotal: 20,
+        total: 26,
+        paidBy: 'p1',
         discounts: 0,
         tax: 2,
         tip: 4,
-        total: 26,
-        paidBy: 'p1',
       };
 
-      const assignments: PersonAssignment[] = [
-        { personId: 'p1', items: [{ itemId: 'i1', share: 0.5 }] },
-        { personId: 'p2', items: [{ itemId: 'i1', share: 0.5 }] },
+      const assignments: ItemAssignment[] = [
+        {
+          itemId: 'i1',
+          assignments: [
+            { personId: 'p1', share: 0.5 },
+            { personId: 'p2', share: 0.5 },
+          ],
+        },
       ];
 
       balanceManager.addReceipt(receipt, assignments);
@@ -244,15 +249,15 @@ describe('BalanceManager', () => {
         date: new Date(),
         items: [{ id: 'i1', name: 'Item', price: 10, quantity: 1 }],
         subtotal: 10,
+        total: 10,
+        paidBy: 'p1',
         discounts: 0,
         tax: 0,
         tip: 0,
-        total: 10,
-        paidBy: 'p1',
       };
 
-      const assignments1: PersonAssignment[] = [
-        { personId: 'p2', items: [{ itemId: 'i1', share: 1.0 }] },
+      const assignments1: ItemAssignment[] = [
+        { itemId: 'i1', assignments: [{ personId: 'p2', share: 1.0 }] },
       ];
 
       // Receipt 2: Bob pays, Alice owes $5
@@ -262,15 +267,15 @@ describe('BalanceManager', () => {
         date: new Date(),
         items: [{ id: 'i2', name: 'Item', price: 5, quantity: 1 }],
         subtotal: 5,
+        total: 5,
+        paidBy: 'p2',
         discounts: 0,
         tax: 0,
         tip: 0,
-        total: 5,
-        paidBy: 'p2',
       };
 
-      const assignments2: PersonAssignment[] = [
-        { personId: 'p1', items: [{ itemId: 'i2', share: 1.0 }] },
+      const assignments2: ItemAssignment[] = [
+        { itemId: 'i2', assignments: [{ personId: 'p1', share: 1.0 }] },
       ];
 
       balanceManager.addReceipt(receipt1, assignments1);
@@ -300,36 +305,34 @@ describe('BalanceManager', () => {
         items: [
           { id: 'i1', name: 'Pepperoni Pizza', price: 20, quantity: 1 },
           { id: 'i2', name: 'Caesar Salad', price: 12, quantity: 1 },
-          { id: 'i3', name: 'Drinks', price: 15, quantity: 1 }, // $15 total for 3 drinks
+          { id: 'i3', name: 'Drinks', price: 15, quantity: 1 },
         ],
         subtotal: 47,
+        total: 60.63,
+        paidBy: bob.id, // Bob pays
         discounts: 0,
         tax: 4.23,
         tip: 9.4,
-        total: 60.63,
-        paidBy: bob.id, // Bob pays
       };
 
-      const assignments: PersonAssignment[] = [
+      const assignments: ItemAssignment[] = [
         {
-          personId: alice.id,
-          items: [
-            { itemId: 'i1', share: 0.5 },
-            { itemId: 'i3', share: 0.33 },
+          itemId: 'i1',
+          assignments: [
+            { personId: alice.id, share: 0.5 },
+            { personId: bob.id, share: 0.5 },
           ],
         },
         {
-          personId: bob.id,
-          items: [
-            { itemId: 'i1', share: 0.5 },
-            { itemId: 'i3', share: 0.33 },
-          ],
+          itemId: 'i2',
+          assignments: [{ personId: carol.id, share: 1.0 }],
         },
         {
-          personId: carol.id,
-          items: [
-            { itemId: 'i2', share: 1.0 },
-            { itemId: 'i3', share: 0.34 },
+          itemId: 'i3',
+          assignments: [
+            { personId: alice.id, share: 0.33 },
+            { personId: bob.id, share: 0.33 },
+            { personId: carol.id, share: 0.34 },
           ],
         },
       ];
@@ -371,17 +374,22 @@ describe('BalanceManager', () => {
         date: new Date(),
         items: [{ id: 'i1', name: 'Item', price: 30, quantity: 1 }],
         subtotal: 30,
+        total: 30,
+        paidBy: alice.id,
         discounts: 0,
         tax: 0,
         tip: 0,
-        total: 30,
-        paidBy: alice.id,
       };
 
-      const assignments1: PersonAssignment[] = [
-        { personId: alice.id, items: [{ itemId: 'i1', share: 1 / 3 }] },
-        { personId: bob.id, items: [{ itemId: 'i1', share: 1 / 3 }] },
-        { personId: carol.id, items: [{ itemId: 'i1', share: 1 / 3 }] },
+      const assignments1: ItemAssignment[] = [
+        {
+          itemId: 'i1',
+          assignments: [
+            { personId: alice.id, share: 1 / 3 },
+            { personId: bob.id, share: 1 / 3 },
+            { personId: carol.id, share: 1 / 3 },
+          ],
+        },
       ];
 
       // R2: Bob pays $15, Alice and Carol split ($7.50 each)
@@ -391,16 +399,21 @@ describe('BalanceManager', () => {
         date: new Date(),
         items: [{ id: 'i2', name: 'Item', price: 15, quantity: 1 }],
         subtotal: 15,
+        total: 15,
+        paidBy: bob.id,
         discounts: 0,
         tax: 0,
         tip: 0,
-        total: 15,
-        paidBy: bob.id,
       };
 
-      const assignments2: PersonAssignment[] = [
-        { personId: alice.id, items: [{ itemId: 'i2', share: 0.5 }] },
-        { personId: carol.id, items: [{ itemId: 'i2', share: 0.5 }] },
+      const assignments2: ItemAssignment[] = [
+        {
+          itemId: 'i2',
+          assignments: [
+            { personId: alice.id, share: 0.5 },
+            { personId: carol.id, share: 0.5 },
+          ],
+        },
       ];
 
       balanceManager.addReceipt(receipt1, assignments1);

@@ -71,9 +71,27 @@ POST /api/itemizer/assign
 POST /api/balance/receipt {
   receipt: { ...receipt from 2a... },
   assignments: [
-    { personId: "p1", items: [{ itemId: "i1", share: 0.5 }, { itemId: "i3", share: 0.33 }] },
-    { personId: "p2", items: [{ itemId: "i1", share: 0.5 }, { itemId: "i3", share: 0.33 }] },
-    { personId: "p3", items: [{ itemId: "i2", share: 1.0 }, { itemId: "i3", share: 0.34 }] }
+    {
+      itemId: "i1",
+      assignments: [
+        { personId: "p1", share: 0.5 },
+        { personId: "p2", share: 0.5 }
+      ]
+    },
+    {
+      itemId: "i2",
+      assignments: [
+        { personId: "p3", share: 1.0 }
+      ]
+    },
+    {
+      itemId: "i3",
+      assignments: [
+        { personId: "p1", share: 0.33 },
+        { personId: "p2", share: 0.33 },
+        { personId: "p3", share: 0.34 }
+      ]
+    }
   ]
 }
 ```

@@ -1,4 +1,4 @@
-import { Balance, Person, Receipt, PersonAssignment, Settlement } from '../schemas';
+import { Balance, Person, Receipt, ItemAssignment, Settlement } from '../schemas';
 
 export class BalanceManager {
   private balance: Balance;
@@ -23,7 +23,7 @@ export class BalanceManager {
     return person;
   }
 
-  addReceipt(receipt: Receipt, assignments: PersonAssignment[]): void {
+  addReceipt(receipt: Receipt, assignments: ItemAssignment[]): void {
     this.balance.receipts.push(receipt);
     this.balance.assignments.set(receipt.id, assignments);
   }
@@ -41,8 +41,9 @@ export class BalanceManager {
       const assignments = this.balance.assignments.get(receipt.id) || [];
 
       // Calculate each person's share of the receipt
-      for (const assignment of assignments) {
-        const personSubtotal = this.calculatePersonSubtotal(receipt, assignment);
+      const personSubtotals = this.calculatePersonSubtotals(receipt, assignments);
+
+      for (const [personId, personSubtotal] of personSubtotals.entries()) {
         const adjustedSubtotal = personSubtotal - this.calculateProportionalAmount(
           personSubtotal,
           receipt.subtotal,
@@ -62,8 +63,8 @@ export class BalanceManager {
         const personTotal = adjustedSubtotal + personTax + personTip;
 
         // Person owes this amount
-        const currentBalance = netBalances.get(assignment.personId) || 0;
-        netBalances.set(assignment.personId, currentBalance - personTotal);
+        const currentBalance = netBalances.get(personId) || 0;
+        netBalances.set(personId, currentBalance - personTotal);
       }
 
       // Person who paid gets credited
@@ -79,17 +80,26 @@ export class BalanceManager {
     return this.balance;
   }
 
-  private calculatePersonSubtotal(receipt: Receipt, assignment: PersonAssignment): number {
-    let subtotal = 0;
+  private calculatePersonSubtotals(
+    receipt: Receipt,
+    assignments: ItemAssignment[]
+  ): Map<string, number> {
+    const personSubtotals = new Map<string, number>();
 
-    for (const itemAssignment of assignment.items) {
+    for (const itemAssignment of assignments) {
       const item = receipt.items.find(i => i.id === itemAssignment.itemId);
-      if (item) {
-        subtotal += item.price * item.quantity * itemAssignment.share;
+      if (!item) continue;
+
+      const itemCost = item.price * item.quantity;
+
+      for (const personShare of itemAssignment.assignments) {
+        const personCost = itemCost * personShare.share;
+        const currentSubtotal = personSubtotals.get(personShare.personId) || 0;
+        personSubtotals.set(personShare.personId, currentSubtotal + personCost);
       }
     }
 
-    return subtotal;
+    return personSubtotals;
   }
 
   private calculateProportionalAmount(

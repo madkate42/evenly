@@ -15,8 +15,8 @@ describe('Itemizer', () => {
       const assignments = itemizer.getAssignments('r1');
       expect(assignments).toHaveLength(1);
       expect(assignments[0]).toEqual({
-        personId: 'p1',
-        items: [{ itemId: 'i1', share: 0.5 }],
+        itemId: 'i1',
+        assignments: [{ personId: 'p1', share: 0.5 }],
       });
     });
 
@@ -25,7 +25,14 @@ describe('Itemizer', () => {
       itemizer.assignItemToPerson('r1', 'i1', 'p2', 0.5);
 
       const assignments = itemizer.getAssignments('r1');
-      expect(assignments).toHaveLength(2);
+      expect(assignments).toHaveLength(1);
+      expect(assignments[0]).toEqual({
+        itemId: 'i1',
+        assignments: [
+          { personId: 'p1', share: 0.5 },
+          { personId: 'p2', share: 0.5 },
+        ],
+      });
     });
 
     it('should allow one person to have multiple items', () => {
@@ -33,8 +40,7 @@ describe('Itemizer', () => {
       itemizer.assignItemToPerson('r1', 'i2', 'p1', 1.0);
 
       const assignments = itemizer.getAssignments('r1');
-      expect(assignments).toHaveLength(1);
-      expect(assignments[0].items).toHaveLength(2);
+      expect(assignments).toHaveLength(2);
     });
 
     it('should throw error if share is less than 0', () => {
@@ -63,7 +69,8 @@ describe('Itemizer', () => {
       itemizer.assignItemToPerson('r1', 'i1', 'p3', 0.4);
 
       const assignments = itemizer.getAssignments('r1');
-      expect(assignments).toHaveLength(3);
+      expect(assignments).toHaveLength(1);
+      expect(assignments[0].assignments).toHaveLength(3);
     });
 
     it('should handle assignments across multiple receipts', () => {
@@ -90,7 +97,13 @@ describe('Itemizer', () => {
       itemizer.assignItemToPerson('r1', 'i2', 'p3', 1.0);
 
       const assignments = itemizer.getAssignments('r1');
-      expect(assignments).toHaveLength(3);
+      expect(assignments).toHaveLength(2);
+
+      const i1Assignment = assignments.find((a) => a.itemId === 'i1');
+      const i2Assignment = assignments.find((a) => a.itemId === 'i2');
+
+      expect(i1Assignment?.assignments).toHaveLength(2);
+      expect(i2Assignment?.assignments).toHaveLength(1);
     });
   });
 
@@ -104,11 +117,11 @@ describe('Itemizer', () => {
         { id: 'i2', name: 'Salad', price: 12, quantity: 1 },
       ],
       subtotal: 32,
-      discounts: 0,
-      tax: 2.88,
-      tip: 6.40,
       total: 41.28,
       paidBy: 'p1',
+      discounts: 0,
+      tax: 2.88,
+      tip: 6.4,
     };
 
     it('should return true when all items are fully assigned', () => {
@@ -175,14 +188,14 @@ describe('Itemizer', () => {
         items: [
           { id: 'i1', name: 'Pepperoni Pizza', price: 20, quantity: 1 },
           { id: 'i2', name: 'Caesar Salad', price: 12, quantity: 1 },
-          { id: 'i3', name: 'Drinks', price: 15, quantity: 1 }, // $15 total for drinks
+          { id: 'i3', name: 'Drinks', price: 15, quantity: 1 },
         ],
         subtotal: 47,
+        total: 60.63,
+        paidBy: 'p2',
         discounts: 0,
         tax: 4.23,
         tip: 9.4,
-        total: 60.63,
-        paidBy: 'p2',
       };
 
       // Alice and Bob split pizza
@@ -203,11 +216,23 @@ describe('Itemizer', () => {
       expect(isValid).toBe(true);
       expect(assignments).toHaveLength(3);
 
-      // Verify Alice's assignments
-      const aliceAssignment = assignments.find((a) => a.personId === 'p1');
-      expect(aliceAssignment?.items).toEqual([
-        { itemId: 'i1', share: 0.5 },
-        { itemId: 'i3', share: 0.33 },
+      // Verify pizza (i1) assignments
+      const pizzaAssignment = assignments.find((a) => a.itemId === 'i1');
+      expect(pizzaAssignment?.assignments).toEqual([
+        { personId: 'p1', share: 0.5 },
+        { personId: 'p2', share: 0.5 },
+      ]);
+
+      // Verify salad (i2) assignment
+      const saladAssignment = assignments.find((a) => a.itemId === 'i2');
+      expect(saladAssignment?.assignments).toEqual([{ personId: 'p3', share: 1.0 }]);
+
+      // Verify drinks (i3) assignments
+      const drinksAssignment = assignments.find((a) => a.itemId === 'i3');
+      expect(drinksAssignment?.assignments).toEqual([
+        { personId: 'p1', share: 0.33 },
+        { personId: 'p2', share: 0.33 },
+        { personId: 'p3', share: 0.34 },
       ]);
     });
   });

@@ -46,15 +46,15 @@ describe('API Integration Tests', () => {
 
       const assignments = [
         {
-          personId: alice.body.id,
-          items: [{ itemId: 'i1', share: 0.5 }], // Alice gets half the pizza
+          itemId: 'i1', // Pizza
+          assignments: [
+            { personId: alice.body.id, share: 0.5 },
+            { personId: bob.body.id, share: 0.5 },
+          ],
         },
         {
-          personId: bob.body.id,
-          items: [
-            { itemId: 'i1', share: 0.5 }, // Bob gets half the pizza
-            { itemId: 'i2', share: 1.0 }, // Bob gets all the salad
-          ],
+          itemId: 'i2', // Salad
+          assignments: [{ personId: bob.body.id, share: 1.0 }],
         },
       ];
 
@@ -146,8 +146,8 @@ describe('API Integration Tests', () => {
       expect(response.body).toBeInstanceOf(Array);
       expect(response.body).toHaveLength(1);
       expect(response.body[0]).toEqual({
-        personId: 'p1',
-        items: [{ itemId: 'i1', share: 1.0 }],
+        itemId: 'i1',
+        assignments: [{ personId: 'p1', share: 1.0 }],
       });
     });
 
@@ -189,9 +189,14 @@ describe('API Integration Tests', () => {
       };
 
       const assignments1 = [
-        { personId: dave.body.id, items: [{ itemId: 'i100', share: 1 / 3 }] },
-        { personId: eve.body.id, items: [{ itemId: 'i100', share: 1 / 3 }] },
-        { personId: frank.body.id, items: [{ itemId: 'i100', share: 1 / 3 }] },
+        {
+          itemId: 'i100',
+          assignments: [
+            { personId: dave.body.id, share: 1 / 3 },
+            { personId: eve.body.id, share: 1 / 3 },
+            { personId: frank.body.id, share: 1 / 3 },
+          ],
+        },
       ];
 
       await request(app)
@@ -210,8 +215,13 @@ describe('API Integration Tests', () => {
       };
 
       const assignments2 = [
-        { personId: dave.body.id, items: [{ itemId: 'i200', share: 0.5 }] },
-        { personId: frank.body.id, items: [{ itemId: 'i200', share: 0.5 }] },
+        {
+          itemId: 'i200',
+          assignments: [
+            { personId: dave.body.id, share: 0.5 },
+            { personId: frank.body.id, share: 0.5 },
+          ],
+        },
       ];
 
       await request(app)
