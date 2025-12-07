@@ -46,17 +46,17 @@ export class BalanceManager {
         const adjustedSubtotal = personSubtotal - this.calculateProportionalAmount(
           personSubtotal,
           receipt.subtotal,
-          receipt.discounts
+          receipt.discounts ?? 0
         );
         const personTax = this.calculateProportionalAmount(
           personSubtotal,
           receipt.subtotal,
-          receipt.tax
+          receipt.tax ?? 0
         );
         const personTip = this.calculateProportionalAmount(
           personSubtotal,
           receipt.subtotal,
-          receipt.tip
+          receipt.tip ?? 0
         );
 
         const personTotal = adjustedSubtotal + personTax + personTip;
