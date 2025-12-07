@@ -5,8 +5,15 @@ Receipt manager between friends to keep fair balances
 ## Quick Start
 
 ### Install Dependencies
+Install dependencies for both backend and frontend:
 ```bash
-npm install
+npm run install:all
+```
+
+Or install individually:
+```bash
+cd backend && npm install
+cd frontend && npm install
 ```
 
 ### Run Development Servers
@@ -30,6 +37,8 @@ npm run build
 ```bash
 npm run test
 ```
+
+**Note:** This project does NOT use npm workspaces. Backend and frontend have completely separate `node_modules` folders.
 
 ## Project Structure
 
