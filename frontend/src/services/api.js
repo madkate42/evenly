@@ -71,6 +71,24 @@ class ApiService {
     if (!response.ok) throw new Error('Failed to get settlements');
     return response.json();
   }
+
+  async deleteReceipt(id) {
+    const response = await fetch(`${API_BASE_URL}/api/balance/receipt/${id}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error('Failed to delete receipt');
+    return response.json();
+  }
+
+  async updateReceipt(id, data) {
+    const response = await fetch(`${API_BASE_URL}/api/balance/receipt/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('Failed to update receipt');
+    return response.json();
+  }
+  
+  
 }
 
 export default new ApiService();

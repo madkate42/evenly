@@ -45,4 +45,29 @@ router.get('/settlements', (_req, res) => {
   }
 });
 
+// DELETE /api/balance/receipt/:id
+router.delete('/receipt/:id', (req, res) => {
+  balanceManager.deleteReceipt(req.params.id);
+  res.json({ success: true });
+});
+
+// PUT /api/balance/receipt/:id
+router.put('/receipt/:id', (req, res) => {
+  try {
+    const receiptId = req.params.id;
+    const updatedData = req.body;
+
+    const updatedReceipt = balanceManager.updateReceipt(
+      receiptId,
+      updatedData
+    );
+
+    res.json(updatedReceipt);
+  } catch (error) {
+    res.status(404).json({ error: error instanceof Error ? error.message : 'Failed to update receipt' });
+  }
+});
+
+
+
 export default router;

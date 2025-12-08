@@ -24,9 +24,43 @@ export class BalanceManager {
   }
 
   addReceipt(receipt: Receipt, assignments: ItemAssignment[]): void {
-    this.balance.receipts.push(receipt);
+    // Check if receipt already exists
+    const existingIndex = this.balance.receipts.findIndex(r => r.id === receipt.id);
+
+    if (existingIndex >= 0) {
+      // Update existing receipt
+      this.balance.receipts[existingIndex] = receipt;
+    } else {
+      // Add new receipt
+      this.balance.receipts.push(receipt);
+    }
+
     this.balance.assignments.set(receipt.id, assignments);
   }
+
+  deleteReceipt(receiptId: string) {
+    this.balance.receipts =
+      this.balance.receipts.filter(r => r.id !== receiptId);
+  
+    this.balance.assignments.delete(receiptId);
+  }
+
+  updateReceipt(receiptId: string, data: Partial<Receipt>): Receipt {
+    const index = this.balance.receipts.findIndex(r => r.id === receiptId);
+
+    if (index === -1) {
+      throw new Error('Receipt not found');
+    }
+
+    this.balance.receipts[index] = {
+      ...this.balance.receipts[index],
+      ...data,
+      id: receiptId, // enforce correct ID
+    };
+
+    return this.balance.receipts[index];
+  }
+  
 
   calculateSettlements(): Settlement[] {
     const netBalances = new Map<string, number>();

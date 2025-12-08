@@ -400,6 +400,7 @@ main {
   background-color: #fef3c7;
   color: #d97706;
   border-radius: 4px;
+  margin-bottom: 20px;
 }
 
 .empty-state {
@@ -409,4 +410,31 @@ main {
   background-color: #f9fafb;
   border-radius: 8px;
   border: 2px dashed #e5e7eb;
+}
+
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  color: #9ca3af;
+  font-size: 14px;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background-color: #e5e7eb;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
 }

@@ -8,15 +8,35 @@ import Settlements from './components/Settlements';
 function App() {
   const [people, setPeople] = useState([]);
   const [currentReceipt, setCurrentReceipt] = useState(null);
+  const [editingReceipt, setEditingReceipt] = useState(null);
   const [activeTab, setActiveTab] = useState('people');
+  const [settlementsRefreshKey, setSettlementsRefreshKey] = useState(0);
 
   const handleReceiptCreated = (receipt) => {
     setCurrentReceipt(receipt);
+    setEditingReceipt(null);
     setActiveTab('assign');
   };
 
   const handleAssignmentComplete = () => {
     setCurrentReceipt(null);
+    setSettlementsRefreshKey(prev => prev + 1); // Force settlements to refresh
+    setActiveTab('settlements');
+  };
+
+  const handleEditReceipt = (receipt) => {
+    setEditingReceipt(receipt);
+    setActiveTab('receipt');
+  };
+
+  const handleReceiptUpdated = () => {
+    setEditingReceipt(null);
+    setSettlementsRefreshKey(prev => prev + 1); // Force settlements to refresh
+    setActiveTab('settlements');
+  };
+
+  const handleReceiptDeleted = () => {
+    setSettlementsRefreshKey(prev => prev + 1); // Force settlements to refresh
     setActiveTab('settlements');
   };
 
@@ -35,7 +55,10 @@ function App() {
         </button>
         <button
           className={activeTab === 'receipt' ? 'active' : ''}
-          onClick={() => setActiveTab('receipt')}
+          onClick={() => {
+            setEditingReceipt(null);
+            setActiveTab('receipt');
+          }}
         >
           Add Receipt
         </button>
@@ -53,7 +76,16 @@ function App() {
         )}
 
         {activeTab === 'receipt' && (
-          <ReceiptForm people={people} onReceiptCreated={handleReceiptCreated} />
+          <ReceiptForm
+            people={people}
+            onReceiptCreated={handleReceiptCreated}
+            onReceiptUpdated={handleReceiptUpdated}
+            existingReceipt={editingReceipt}
+            onCancelEdit={() => {
+              setEditingReceipt(null);
+              setActiveTab('settlements');
+            }}
+          />
         )}
 
         {activeTab === 'assign' && currentReceipt && (
@@ -64,7 +96,14 @@ function App() {
           />
         )}
 
-        {activeTab === 'settlements' && <Settlements people={people} />}
+        {activeTab === 'settlements' && (
+          <Settlements
+            key={settlementsRefreshKey}
+            people={people}
+            onEditReceipt={handleEditReceipt}
+            onReceiptDeleted={handleReceiptDeleted}
+          />
+        )}
       </main>
     </div>
   );
