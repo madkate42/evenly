@@ -58,6 +58,21 @@ export default function ItemAssignment({ receipt, people, onComplete }) {
     });
   };
 
+  const addEveryone = (itemId) => {
+    // Assign item to all people with equal shares
+    const equalShare = 1 / people.length;
+    const newAssignments = people.map((person) => ({
+      personId: person.id,
+      share: equalShare,
+    }));
+
+    setAssignments({
+      ...assignments,
+      [itemId]: newAssignments,
+    });
+    setError('');
+  };
+
   const getItemTotal = (itemId) => {
     return (assignments[itemId] || []).reduce((sum, a) => sum + a.share, 0);
   };
@@ -160,6 +175,13 @@ export default function ItemAssignment({ receipt, people, onComplete }) {
                 </option>
               ))}
             </select>
+            <button
+              type="button"
+              onClick={() => addEveryone(item.id)}
+              style={{ marginLeft: '10px' }}
+            >
+              Add Everyone
+            </button>
           </div>
         </div>
       ))}
