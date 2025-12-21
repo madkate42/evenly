@@ -20,6 +20,7 @@ export class Parser {
       date,
       items,
       subtotal: this.roundMoney(subtotal),
+      discounts: totals.discount ? this.roundMoney(totals.discount) : undefined,
       tax: totals.tax ? this.roundMoney(totals.tax) : undefined,
       tip: totals.tip ? this.roundMoney(totals.tip) : undefined,
       total: this.roundMoney(totals.total),
@@ -43,9 +44,10 @@ export class Parser {
     }));
 
     const subtotal = data.subtotal ?? items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const discounts = data.discounts ? parseFloat(data.discounts) : undefined;
     const tax = data.tax ? parseFloat(data.tax) : undefined;
     const tip = data.tip ? parseFloat(data.tip) : undefined;
-    const total = data.total ?? (subtotal + (tax ?? 0) + (tip ?? 0));
+    const total = data.total ?? (subtotal - (discounts ?? 0) + (tax ?? 0) + (tip ?? 0));
 
     return {
       id: data.id || randomUUID(),
@@ -53,6 +55,7 @@ export class Parser {
       date: data.date ? new Date(data.date) : new Date(),
       items,
       subtotal: this.roundMoney(subtotal),
+      discounts: discounts !== undefined ? this.roundMoney(discounts) : undefined,
       tax: tax !== undefined ? this.roundMoney(tax) : undefined,
       tip: tip !== undefined ? this.roundMoney(tip) : undefined,
       total: this.roundMoney(total),
@@ -155,17 +158,20 @@ export class Parser {
 
   private extractTotals(lines: string[]): {
     subtotal: number | null;
+    discount: number;
     tax: number;
     tip: number;
     total: number;
   } {
     let subtotal: number | null = null;
+    let discount = 0;
     let tax = 0;
     let tip = 0;
     let total = 0;
 
     // Patterns to match totals
     const subtotalPattern = /subtotal.*?\$?(\d+\.\d{2})/i;
+    const discountPattern = /discount.*?\$?(\d+\.\d{2})/i;
     const taxPattern = /tax.*?\$?(\d+\.\d{2})/i;
     const tipPattern = /tip.*?\$?(\d+\.\d{2})/i;
     const totalPattern = /(?:^|\b)total.*?\$?(\d+\.\d{2})/i;
@@ -175,6 +181,8 @@ export class Parser {
 
       if ((match = line.match(subtotalPattern))) {
         subtotal = parseFloat(match[1]);
+      } else if ((match = line.match(discountPattern))) {
+        discount = parseFloat(match[1]);
       } else if ((match = line.match(taxPattern))) {
         tax = parseFloat(match[1]);
       } else if ((match = line.match(tipPattern))) {
@@ -184,7 +192,7 @@ export class Parser {
       }
     }
 
-    return { subtotal, tax, tip, total };
+    return { subtotal, discount, tax, tip, total };
   }
 
   private roundMoney(amount: number): number {

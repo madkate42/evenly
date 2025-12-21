@@ -11,6 +11,7 @@ export default function ReceiptForm({
 }) {
   const [merchant, setMerchant] = useState('');
   const [items, setItems] = useState([{ name: '', price: '', quantity: 1 }]);
+  const [discount, setDiscount] = useState('');
   const [tax, setTax] = useState('');
   const [tip, setTip] = useState('');
   const [paidBy, setPaidBy] = useState('');
@@ -22,6 +23,7 @@ export default function ReceiptForm({
       setMerchant(existingReceipt.merchant || '');
       // Make a copy of items to avoid mutations
       setItems(existingReceipt.items.map(item => ({ ...item })));
+      setDiscount(existingReceipt.discounts ?? '');
       setTax(existingReceipt.tax ?? '');
       setTip(existingReceipt.tip ?? '');
       setPaidBy(existingReceipt.paidBy ?? '');
@@ -29,6 +31,7 @@ export default function ReceiptForm({
       // Reset form when not editing
       setMerchant('');
       setItems([{ name: '', price: '', quantity: 1 }]);
+      setDiscount('');
       setTax('');
       setTip('');
       setPaidBy('');
@@ -82,6 +85,7 @@ export default function ReceiptForm({
           quantity: Number(i.quantity) || 1,
         })),
         paidBy,
+        discounts: discount !== '' ? Number(discount) : undefined,
         tax: tax !== '' ? Number(tax) : undefined,
         tip: tip !== '' ? Number(tip) : undefined,
       };
@@ -111,7 +115,7 @@ export default function ReceiptForm({
 
       {existingReceipt && (
         <div className="warning">
-          <strong>Note:</strong> Editing only updates merchant, tax, tip, and who paid. To change items or assignments, please delete and recreate the receipt.
+          <strong>Note:</strong> Editing only updates merchant, discount, tax, tip, and who paid. To change items or assignments, please delete and recreate the receipt.
         </div>
       )}
 
@@ -187,6 +191,17 @@ export default function ReceiptForm({
         </div>
 
         <div className="form-row">
+          <div className="form-group">
+            <label>Discount (optional)</label>
+            <input
+              type="number"
+              step="0.01"
+              value={discount}
+              placeholder="0.00"
+              onChange={(e) => setDiscount(e.target.value)}
+            />
+          </div>
+
           <div className="form-group">
             <label>Tax (optional)</label>
             <input
